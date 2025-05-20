@@ -1,38 +1,42 @@
 ﻿@page
 @model Area42.WebUI.Pages.Reserveringen.IndexModel
 @{
-    ViewData["Title"] = "Reservering Plaatsen";
+    ViewData["Title"] = "Reserveringen";
 }
 
-<h2 class="mb-4">Plaats een Reservering</h2>
+<h2>Reserveringen</h2>
 
-<form method="post">
-    <div class="mb-3">
-        <label for="AccommodatieId" class="form-label">Selecteer Accommodatie</label>
-        <select id="AccommodatieId" name="AccommodatieId" class="form-select" required>
-            @foreach (var accommodatie in Model.Accommodaties)
-            {
-                <option value="@accommodatie.Id">@accommodatie.Naam - @accommodatie.Type</option>
-            }
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label for="Startdatum" class="form-label">Startdatum</label>
-        <input type="date" id="Startdatum" name="Startdatum" class="form-control" required />
-    </div>
-
-    <div class="mb-3">
-        <label for="Einddatum" class="form-label">Einddatum</label>
-        <input type="date" id="Einddatum" name="Einddatum" class="form-control" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Reserveren</button>
-</form>
-
-@if (!string.IsNullOrEmpty(Model.Bericht))
+@if (Model.Reserveringen != null && Model.Reserveringen.Count > 0)
 {
-    <div class="alert alert-success mt-3">
-        @Model.Bericht
-    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Accommodatie</th>
+                <th>Startdatum</th>
+                <th>Einddatum</th>
+                <th>Status</th>
+                @* Eventueel
+                <th>Acties</th>
+                *@
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reserv in Model.Reserveringen)
+            {
+                <tr>
+                    <td>@reserv.Id</td>
+                    <td>@reserv.AccommodatieId</td>
+                    <td>@reserv.Startdatum.ToShortDateString()</td>
+                    <td>@reserv.Einddatum.ToShortDateString()</td>
+                    <td>@reserv.Status</td>
+                    @* Voeg hier knoppen toe om bijvoorbeeld te bewerken/verwijderen als de gebruiker medewerker is *@
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Er zijn momenteel geen reserveringen beschikbaar.</p>
 }

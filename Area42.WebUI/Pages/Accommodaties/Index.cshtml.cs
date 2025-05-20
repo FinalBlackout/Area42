@@ -9,15 +9,18 @@ namespace Area42.WebUI.Pages.Accommodaties
     public class IndexModel : PageModel
     {
         private readonly IAccommodatieService _accommodatieService;
-        public List<Accommodatie> Accommodaties { get; set; } = new();
 
         public IndexModel(IAccommodatieService accommodatieService)
         {
             _accommodatieService = accommodatieService;
         }
 
+        // Zorg dat deze property niet null blijft; initializeer hem met een lege lijst.
+        public List<Accommodatie> Accommodaties { get; set; } = new List<Accommodatie>();
+
         public async Task OnGetAsync()
         {
+            // Vul de lijst met accommodaties uit de database
             Accommodaties = await _accommodatieService.GetAllAccommodatiesAsync();
         }
     }

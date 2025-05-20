@@ -1,0 +1,42 @@
+﻿@page
+@model Area42.WebUI.Pages.Reserveringen.AddModel
+@{
+    ViewData["Title"] = "Nieuwe Reservering Aanvragen";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="AccommodatieId" class="form-label">Selecteer Accommodatie</label>
+        <select asp-for="AccommodatieId" class="form-select" asp-items="Model.AccommodatieSelectList">
+            <option value="">Maak een keuze...</option>
+        </select>
+        <span asp-validation-for="AccommodatieId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Startdatum" class="form-label">Startdatum</label>
+        <input asp-for="Startdatum" class="form-control" type="date" />
+        <span asp-validation-for="Startdatum" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Einddatum" class="form-label">Einddatum</label>
+        <input asp-for="Einddatum" class="form-control" type="date" />
+        <span asp-validation-for="Einddatum" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Reservering Aanvragen</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success mt-3">
+        @Model.SuccessMessage
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

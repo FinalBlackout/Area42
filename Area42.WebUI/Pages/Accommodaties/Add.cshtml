@@ -1,0 +1,62 @@
+﻿@page
+@model Area42.WebUI.Pages.Accommodaties.AddModel
+@using Area42.Domain.Entities
+@{
+    ViewData["Title"] = "Nieuwe Accommodatie Toevoegen";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="Accommodatie.Naam" class="form-label"></label>
+        <input asp-for="Accommodatie.Naam" class="form-control" />
+        <span asp-validation-for="Accommodatie.Naam" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="ImageFile" class="form-label">Afbeelding</label>
+        <input type="file" asp-for="ImageFile" class="form-control" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Accommodatie.Type" class="form-label"></label>
+        <input asp-for="Accommodatie.Type" class="form-control" />
+        <span asp-validation-for="Accommodatie.Type" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Accommodatie.Capaciteit" class="form-label"></label>
+        <input asp-for="Accommodatie.Capaciteit" class="form-control" type="number" min="1" />
+        <span asp-validation-for="Accommodatie.Capaciteit" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Accommodatie.Beschrijving" class="form-label"></label>
+        <textarea asp-for="Accommodatie.Beschrijving" class="form-control"></textarea>
+        <span asp-validation-for="Accommodatie.Beschrijving" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Accommodatie.PrijsPerNacht" class="form-label"></label>
+        <input asp-for="Accommodatie.PrijsPerNacht" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="Accommodatie.PrijsPerNacht" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Accommodatie.Faciliteiten" class="form-label"></label>
+        <input asp-for="Accommodatie.Faciliteiten" class="form-control" />
+        <span asp-validation-for="Accommodatie.Faciliteiten" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Accommodatie.Status" class="form-label"></label>
+        <select asp-for="Accommodatie.Status" class="form-select">
+            <option value="Beschikbaar">Beschikbaar</option>
+            <option value="Bezet">Bezet</option>
+            <option value="Onderhoud">Onderhoud</option>
+        </select>
+        <span asp-validation-for="Accommodatie.Status" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Accommodatie Toevoegen</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success mt-3">@Model.SuccessMessage</div>
+}

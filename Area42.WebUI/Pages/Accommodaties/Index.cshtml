@@ -4,8 +4,7 @@
     ViewData["Title"] = "Accommodaties";
 }
 
-<h2 class="mb-4">Bekijk Onze Accommodaties</h2>
-
+<h2>Accommodaties</h2>
 <div class="row">
     @if (Model.Accommodaties != null && Model.Accommodaties.Any())
     {
@@ -13,7 +12,16 @@
         {
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
-                    <img class="card-img-top" src="~/images/default-accommodation.jpg" alt="@accommodatie.Naam" />
+                    @if (!string.IsNullOrEmpty(accommodatie.ImagePath))
+                    {
+                        <!-- Zorg dat je de afbeelding ophaalt met het juiste pad. -->
+                        <img class="card-img-top" src="~/@(accommodatie.ImagePath)" alt="@accommodatie.Naam" />
+                    }
+                    else
+                    {
+                        <!-- Optioneel: een standaardafbeelding tonen als er geen afbeelding is opgegeven -->
+                        <img class="card-img-top" src="~/images/default-accommodation.jpg" alt="Default image" />
+                    }
                     <div class="card-body">
                         <h5 class="card-title">@accommodatie.Naam</h5>
                         <p class="card-text">
@@ -22,9 +30,6 @@
                             <strong>Prijs:</strong> &euro;@accommodatie.PrijsPerNacht
                         </p>
                         <p class="card-text">@accommodatie.Beschrijving</p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="/Accommodaties/Details?id=@accommodatie.Id" class="btn btn-primary w-100">Bekijk Details</a>
                     </div>
                 </div>
             </div>

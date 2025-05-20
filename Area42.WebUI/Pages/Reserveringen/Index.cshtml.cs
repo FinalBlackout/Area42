@@ -1,66 +1,32 @@
-using Area42.Domain.Entities;
 using Area42.Application.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using Area42.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Area42.WebUI.Pages.Reserveringen
 {
+    [Authorize] // Zorg dat alleen ingelogde gebruikers deze pagina kunnen zien
     public class IndexModel : PageModel
     {
-        private readonly IAccommodatieService _accommodatieService;
         private readonly IReserveringService _reserveringService;
 
-        public IndexModel(IAccommodatieService accommodatieService, IReserveringService reserveringService)
+        public IndexModel(IReserveringService reserveringService)
         {
-            _accommodatieService = accommodatieService;
             _reserveringService = reserveringService;
         }
 
-        // Zorg dat deze property bestaat en correct is gespeld!
-        public List<Accommodatie> Accommodaties { get; set; } = new List<Accommodatie>();
-
-        [BindProperty]
-        public int AccommodatieId { get; set; }
-
-        [BindProperty]
-        public System.DateTime Startdatum { get; set; }
-
-        [BindProperty]
-        public System.DateTime Einddatum { get; set; }
-
-        public string Bericht { get; set; }
+        // Deze property vult de naam van de reserveringen (ofwel alle, of alleen de eigen reserveringen)
+        public List<Reservering> Reserveringen { get; set; } = new List<Reservering>();
 
         public async Task OnGetAsync()
         {
-            // Vul de lijst met accommodaties
-            Accommodaties = await _accommodatieService.GetAllAccommodatiesAsync();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            // Voorbeeldvalidatie
-            if (Startdatum >= Einddatum)
-            {
-                ModelState.AddModelError(string.Empty, "Einddatum moet later zijn dan de startdatum.");
-                await OnGetAsync();
-                return Page();
-            }
-
-            var nieuweReservering = new Reservering
-            {
-                AccommodatieId = AccommodatieId,
-                Startdatum = Startdatum,
-                Einddatum = Einddatum,
-                Status = "In behandeling"
-            };
-
-            await _reserveringService.CreateReserveringAsync(nieuweReservering);
-            Bericht = "Reservering succesvol geplaatst!";
-
-            // Je kunt eventueel de pagina opnieuw laden of redirecten
-            return RedirectToPage("/Reserveringen/Index");
+            // De service controleert intern de rol van de ingelogde gebruiker.
+            // Als de gebruiker "Medewerker" is wordt alle reserveringen teruggegeven.
+            // Bij een "Klant" worden alleen de reserveringen van de klant opgehaald.
+            Reserveringen = await _reserveringService.GetReserveringenVoorUserAsync(User);
         }
     }
 }

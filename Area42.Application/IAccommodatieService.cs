@@ -7,6 +7,6 @@ namespace Area42.Application.Interfaces
     public interface IAccommodatieService
     {
         Task<List<Accommodatie>> GetAllAccommodatiesAsync();
-        // Andere methoden (bijv. GetById, Create, Update) kunnen later toegevoegd worden.
+        Task AddAccommodatieAsync(Accommodatie accommodatie);
     }
 }
