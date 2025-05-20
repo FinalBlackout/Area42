@@ -1,0 +1,39 @@
+﻿@page
+@model Area42.WebUI.Pages.Accommodaties.IndexModel
+@{
+    ViewData["Title"] = "Accommodaties";
+}
+
+<h2 class="mb-4">Bekijk Onze Accommodaties</h2>
+
+<div class="row">
+    @if (Model.Accommodaties != null && Model.Accommodaties.Any())
+    {
+        foreach (var accommodatie in Model.Accommodaties)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img class="card-img-top" src="~/images/default-accommodation.jpg" alt="@accommodatie.Naam" />
+                    <div class="card-body">
+                        <h5 class="card-title">@accommodatie.Naam</h5>
+                        <p class="card-text">
+                            <strong>Type:</strong> @accommodatie.Type<br />
+                            <strong>Capaciteit:</strong> @accommodatie.Capaciteit personen<br />
+                            <strong>Prijs:</strong> &euro;@accommodatie.PrijsPerNacht
+                        </p>
+                        <p class="card-text">@accommodatie.Beschrijving</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Accommodaties/Details?id=@accommodatie.Id" class="btn btn-primary w-100">Bekijk Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <p>Er zijn momenteel geen accommodaties beschikbaar.</p>
+        </div>
+    }
+</div>

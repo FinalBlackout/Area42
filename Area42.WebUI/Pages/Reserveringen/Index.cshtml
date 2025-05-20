@@ -1,0 +1,38 @@
+﻿@page
+@model Area42.WebUI.Pages.Reserveringen.IndexModel
+@{
+    ViewData["Title"] = "Reservering Plaatsen";
+}
+
+<h2 class="mb-4">Plaats een Reservering</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="AccommodatieId" class="form-label">Selecteer Accommodatie</label>
+        <select id="AccommodatieId" name="AccommodatieId" class="form-select" required>
+            @foreach (var accommodatie in Model.Accommodaties)
+            {
+                <option value="@accommodatie.Id">@accommodatie.Naam - @accommodatie.Type</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="Startdatum" class="form-label">Startdatum</label>
+        <input type="date" id="Startdatum" name="Startdatum" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="Einddatum" class="form-label">Einddatum</label>
+        <input type="date" id="Einddatum" name="Einddatum" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Reserveren</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Bericht))
+{
+    <div class="alert alert-success mt-3">
+        @Model.Bericht
+    </div>
+}

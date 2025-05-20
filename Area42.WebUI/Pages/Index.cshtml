@@ -1,10 +1,31 @@
 ﻿@page
-@model IndexModel
+@model Area42.WebUI.Pages.IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home - Vakantiepark Area42";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero-sectie -->
+<div class="hero-container text-center d-flex align-items-center" style="min-height: 75vh; background: url('/images/hero-bg.jpg') no-repeat center center/cover;">
+    <div class="container">
+        <h1 class="display-4 text-white fw-bold">Welkom bij Vakantiepark Area42</h1>
+        <p class="lead text-white-50">
+            Ervaar comfort en natuur in de prachtige Achterhoek. Ontdek onze unieke accommodaties en beleef een onvergetelijke vakantie.
+        </p>
+        <a href="/Accommodaties" class="btn btn-primary btn-lg mt-4">Bekijk onze Accommodaties</a>
+    </div>
+</div>
+
+<!-- Extra informatie sectie -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Over Ons</h2>
+            <p>
+                Bij Vakantiepark Area42 streven we ernaar om de perfecte vakantie-ervaring te bieden. Onze accommodaties zijn ontworpen om comfort, rust en een vleugje luxe te combineren met de natuurlijke schoonheid van de Achterhoek.
+            </p>
+        </div>
+        <div class="col-md-6">
+            <img src="~/images/about-us.jpg" class="img-fluid rounded" alt="Over Ons">
+        </div>
+    </div>
 </div>

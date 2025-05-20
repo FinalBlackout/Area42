@@ -1,0 +1,48 @@
+﻿@page
+@model Area42.WebUI.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Registreren";
+}
+
+<h2 class="mb-4">Registreren</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="Username" class="form-label">Gebruikersnaam</label>
+        <input type="text" class="form-control" id="Username" name="Username" value="@Model.Username" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="Password" class="form-label">Wachtwoord</label>
+        <input type="password" class="form-control" id="Password" name="Password" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="ConfirmPassword" class="form-label">Bevestig Wachtwoord</label>
+        <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="Role" class="form-label">Kies uw type account</label>
+        <select class="form-select" id="Role" name="Role" required>
+            <option value="Klant">Klant</option>
+            <option value="Medewerker">Medewerker</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registreren</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger mt-3">
+        @Model.ErrorMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success mt-3">
+        @Model.SuccessMessage
+    </div>
+}
