@@ -40,11 +40,15 @@ namespace Area42.WebUI.Pages.Account
 
         public void OnGet()
         {
-            // Eventuele initiële logica
+            
+
+
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var host = Environment.GetEnvironmentVariable("HOST");
+            Console.WriteLine($"Host: {host}");
             if (!ModelState.IsValid)
             {
                 ErrorMessage = "Controleer uw gegevens en probeer het opnieuw.";
@@ -59,8 +63,6 @@ namespace Area42.WebUI.Pages.Account
                 using (var connection = new MySqlConnection(connectionString))
                 {
                     await connection.OpenAsync();
-
-                    // Voor veiligheid: zorg in productie voor gehashte wachtwoorden
                     string query = "INSERT INTO Users (Username, Password, Role) VALUES (@Username, @Password, @Role)";
                     using (var command = new MySqlCommand(query, connection))
                     {
@@ -75,7 +77,6 @@ namespace Area42.WebUI.Pages.Account
             }
             catch (MySqlException ex)
             {
-                // Hier kun je de fout detailleren en eventueel loggen
                 ErrorMessage = "Er is een fout opgetreden tijdens registratie: " + ex.Message;
             }
 

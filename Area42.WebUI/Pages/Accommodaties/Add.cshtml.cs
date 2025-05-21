@@ -36,7 +36,7 @@ namespace Area42.WebUI.Pages.Accommodaties
 
         public void OnGet()
         {
-            // Eventuele initiële logica voor de pagina
+            
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -47,7 +47,6 @@ namespace Area42.WebUI.Pages.Accommodaties
                 return Page();
             }
 
-            // Optionele: valideer het bestandstype zoals je eerder deed
             var permittedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
             var ext = Path.GetExtension(ImageFile.FileName).ToLowerInvariant();
 
@@ -57,7 +56,6 @@ namespace Area42.WebUI.Pages.Accommodaties
                 return Page();
             }
 
-            // Bestandsopslag logica
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "images", "accommodaties");
             if (!Directory.Exists(uploadsFolder))
             {
@@ -71,7 +69,6 @@ namespace Area42.WebUI.Pages.Accommodaties
             }
             Accommodatie.ImagePath = Path.Combine("images", "accommodaties", uniqueFileName).Replace("\\", "/");
 
-            // Je overige logica voor opslag in de database...
             await _accommodatieService.AddAccommodatieAsync(Accommodatie);
 
             SuccessMessage = "Accommodatie en afbeelding succesvol toegevoegd.";

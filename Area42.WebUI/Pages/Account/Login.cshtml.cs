@@ -31,7 +31,6 @@ namespace Area42.WebUI.Pages.Account
 
         public void OnGet()
         {
-            // Eventuele initiële logica
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -42,10 +41,8 @@ namespace Area42.WebUI.Pages.Account
                 return Page();
             }
 
-            // Haal de connection string uit appsettings.json
             var connectionString = _configuration.GetConnectionString("DefaultConnection");
 
-            // Variabelen om de opgehaalde database-gegevens op te slaan
             string dbUsername = null;
             string dbPassword = null;
             string dbRole = null;
@@ -56,7 +53,6 @@ namespace Area42.WebUI.Pages.Account
                 {
                     await connection.OpenAsync();
 
-                    // Zoek de gebruiker op basis van de (lowercase) gebruikersnaam
                     string query = "SELECT Username, Password, Role FROM Users WHERE LOWER(Username) = @Username LIMIT 1";
                     using (var command = new MySqlCommand(query, connection))
                     {
@@ -73,21 +69,18 @@ namespace Area42.WebUI.Pages.Account
                     }
                 }
 
-                // Geen gebruiker gevonden? Geef een foutmelding.
                 if (string.IsNullOrEmpty(dbUsername))
                 {
                     ErrorMessage = "Ongeldige gebruikersnaam of wachtwoord.";
                     return Page();
                 }
 
-                // Vergelijk wachtwoorden (in productie: controleer met gehashte waarden)
                 if (Password != dbPassword)
                 {
                     ErrorMessage = "Ongeldige gebruikersnaam of wachtwoord.";
                     return Page();
                 }
 
-                // Maak de benodigde claims aan op basis van de opgehaalde gegevens.
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, dbUsername),
@@ -96,7 +89,6 @@ namespace Area42.WebUI.Pages.Account
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // Meld de gebruiker aan via de cookie-authenticatie
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity));
@@ -105,7 +97,6 @@ namespace Area42.WebUI.Pages.Account
             }
             catch (Exception ex)
             {
-                // In productie zou je dit loggen
                 ErrorMessage = "Er is een fout opgetreden tijdens het inloggen: " + ex.Message;
                 return Page();
             }

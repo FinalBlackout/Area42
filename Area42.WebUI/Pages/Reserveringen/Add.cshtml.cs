@@ -1,5 +1,6 @@
 using Area42.Application.Interfaces;
 using Area42.Domain.Entities;
+using Area42.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,6 +15,7 @@ namespace Area42.WebUI.Pages.Reserveringen
     [Authorize] // Alleen ingelogde gebruikers kunnen reserveringen aanvragen.
     public class AddModel : PageModel
     {
+        private readonly IUserService _userService;
         private readonly IReserveringService _reserveringService;
         private readonly IAccommodatieService _accommodatieService;
 
@@ -68,12 +70,14 @@ namespace Area42.WebUI.Pages.Reserveringen
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // Check if model state is valid
             if (!ModelState.IsValid)
             {
                 await LoadAccommodatiesAsync();
                 return Page();
             }
 
+            // Ensure Startdatum < Einddatum
             if (Startdatum >= Einddatum)
             {
                 ModelState.AddModelError(string.Empty, "Einddatum moet na de startdatum liggen.");
@@ -81,12 +85,15 @@ namespace Area42.WebUI.Pages.Reserveringen
                 return Page();
             }
 
-            // Haal het user-id op via een dummy mapping op basis van de ingelogde gebruikersnaam.
-            // In productie verwacht je dat de claim of via een lookup-service het juiste userId teruggeeft.
+            // Haal de user-id op via de ingelogde gebruiker.
+            // Voor deze dummy mapping gebruiken we een eenvoudige if-else.
             int userId = 0;
             if (User.Identity != null && !string.IsNullOrEmpty(User.Identity.Name))
             {
+                // Bijvoorbeeld: Haal de userId op uit de gebruikersnaam.
                 string username = User.Identity.Name.ToLower();
+
+                // Dummy mapping; in productie zou je dit via een service of claim moeten doen.
                 if (username == "gvanderwilligen")
                 {
                     userId = 1;
@@ -95,7 +102,16 @@ namespace Area42.WebUI.Pages.Reserveringen
                 {
                     userId = 2;
                 }
-                // Voeg hier extra logica toe indien er meer gebruikers zijn of haal de userId op via een service.
+
+                System.Diagnostics.Debug.WriteLine($"Logged in user: {User.Identity.Name} with dummy userId: {userId}");
+            }
+
+            // Als userId 0 is, is de gebruiker niet gevonden
+            if (userId == 0)
+            {
+                ModelState.AddModelError(string.Empty, "Gebruiker kon niet worden gevonden in de database.");
+                await LoadAccommodatiesAsync();
+                return Page();
             }
 
             // Maak een nieuwe reservering aan met de ingevulde gegevens.
@@ -108,6 +124,7 @@ namespace Area42.WebUI.Pages.Reserveringen
                 Status = "In behandeling"
             };
 
+            // Roep de methode aan om de reservering op te slaan.
             await _reserveringService.CreateReserveringAsync(newReservation);
 
             SuccessMessage = "Reservering succesvol aangevraagd. Een medewerker zal uw aanvraag beoordelen.";

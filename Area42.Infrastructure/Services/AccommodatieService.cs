@@ -121,7 +121,6 @@ namespace Area42.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                // Log de exception of werk met een logging framework
                 System.Diagnostics.Debug.WriteLine("Fout bij toevoegen accommodatie: " + ex.Message);
                 throw;  // Overweeg om de fout door te geven, dan zie je hem tijdens het debuggen
             }

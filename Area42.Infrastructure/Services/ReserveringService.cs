@@ -2,6 +2,7 @@
 using Area42.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Security.Claims;
@@ -11,34 +12,30 @@ namespace Area42.Infrastructure.Services
 {
     public class ReserveringService : IReserveringService
     {
-
         private readonly string _connectionString;
+        private readonly IConfiguration _configuration;
 
         public ReserveringService(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _connectionString = _configuration.GetConnectionString("DefaultConnection")
+                ?? throw new ArgumentNullException("Connection string 'DefaultConnection' not found.");
         }
 
         public async Task<List<Reservering>> GetReserveringenVoorUserAsync(ClaimsPrincipal user)
         {
             var reserveringen = new List<Reservering>();
-
-            // Basisquery: als medewerker, haal alle reserveringen op.
-            // Als klant, filter dan op de gebruikersnaam of een ander uniek kenmerk.
             string query;
             bool isMedewerker = user.IsInRole("Medewerker");
 
             if (isMedewerker)
             {
-                query = "SELECT Id, AccommodatieId, UserId, Startdatum, Einddatum, Status FROM Reserveringen";
+                query = "SELECT Id, AccommodatieId, UserId, Startdatum, Einddatum, Status FROM Reserveringen;";
             }
             else
             {
-                // Veronderstel dat je de gebruikersnaam als identificatie voor een klant gebruikt.
-                // In een productie-implementatie zou je wellicht een klant-ID in de Users-tabel vastleggen.
-                string username = user.Identity.Name;
                 query = "SELECT Id, AccommodatieId, UserId, Startdatum, Einddatum, Status " +
-                        "FROM Reserveringen WHERE UserId = (SELECT Id FROM Klanten WHERE Gebruikersnaam = @Username) ";
+                        "FROM Reserveringen WHERE UserId = (SELECT Id FROM users WHERE Username = @Username);";
             }
 
             using (var connection = new MySqlConnection(_connectionString))
@@ -72,42 +69,143 @@ namespace Area42.Infrastructure.Services
             return reserveringen;
         }
 
-
-
-        public Task CreateReserveringAsync(Reservering reservering)
+        public async Task CreateReserveringAsync(Reservering reservering)
         {
-            // Voeg logica toe om een reservering op te slaan in de database.
-            return Task.CompletedTask;
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                string query = @"
+                    INSERT INTO reserveringen (UserId, AccommodatieId, Startdatum, Einddatum, Status)
+                    VALUES (@UserId, @AccommodatieId, @Startdatum, @Einddatum, @Status);";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@UserId", reservering.UserId);
+                    command.Parameters.AddWithValue("@AccommodatieId", reservering.AccommodatieId);
+                    command.Parameters.AddWithValue("@Startdatum", reservering.Startdatum);
+                    command.Parameters.AddWithValue("@Einddatum", reservering.Einddatum);
+                    command.Parameters.AddWithValue("@Status", reservering.Status);
+
+                    int affectedRows = await command.ExecuteNonQueryAsync();
+                    System.Diagnostics.Debug.WriteLine($"Rows affected (insert): {affectedRows}");
+
+                }
+            }
         }
 
-        public Task<List<Reservering>> GetAllReserveringenAsync()
+        public async Task<List<Reservering>> GetAllReserveringenAsync()
         {
-            // Retourneer een dummy lijst met reserveringen.
-            return Task.FromResult(new List<Reservering>());
+            var reserveringen = new List<Reservering>();
+            string query = "SELECT Id, AccommodatieId, UserId, Startdatum, Einddatum, Status FROM reserveringen;";
+
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var reservering = new Reservering
+                            {
+                                Id = reader.GetInt32("Id"),
+                                AccommodatieId = reader.GetInt32("AccommodatieId"),
+                                UserId = reader.GetInt32("UserId"),
+                                Startdatum = reader.GetDateTime("Startdatum"),
+                                Einddatum = reader.GetDateTime("Einddatum"),
+                                Status = reader.GetString("Status")
+                            };
+                            reserveringen.Add(reservering);
+                        }
+                    }
+                }
+            }
+            return reserveringen;
         }
 
-        public Task UpdateReserveringAsync(Reservering reservering)
+        public async Task UpdateReserveringAsync(Reservering reservering)
         {
-            // Voeg logica toe om een reservering bij te werken.
-            return Task.CompletedTask;
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = @"
+                    UPDATE reserveringen
+                    SET AccommodatieId = @AccommodatieId,
+                        UserId = @UserId,
+                        Startdatum = @Startdatum,
+                        Einddatum = @Einddatum,
+                        Status = @Status
+                    WHERE Id = @Id;";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@AccommodatieId", reservering.AccommodatieId);
+                    command.Parameters.AddWithValue("@UserId", reservering.UserId);
+                    command.Parameters.AddWithValue("@Startdatum", reservering.Startdatum);
+                    command.Parameters.AddWithValue("@Einddatum", reservering.Einddatum);
+                    command.Parameters.AddWithValue("@Status", reservering.Status);
+                    command.Parameters.AddWithValue("@Id", reservering.Id);
+
+                    int affectedRows = await command.ExecuteNonQueryAsync();
+                    System.Diagnostics.Debug.WriteLine($"Rows affected (update): {affectedRows}");
+                }
+            }
         }
 
-        public Task DeleteReserveringAsync(int reserveringId)
+        public async Task DeleteReserveringAsync(int reserveringId)
         {
-            // Voeg logica toe voor het verwijderen van de reservering.
-            return Task.CompletedTask;
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = "DELETE FROM reserveringen WHERE Id = @Id;";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", reserveringId);
+
+                    int affectedRows = await command.ExecuteNonQueryAsync();
+                    System.Diagnostics.Debug.WriteLine($"Rows affected (delete): {affectedRows}");
+                }
+            }
         }
 
-        public Task ApproveReserveringAsync(int reserveringId)
+        public async Task ApproveReserveringAsync(int reserveringId)
         {
-            // Logica om een reservering goed te keuren.
-            return Task.CompletedTask;
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = "UPDATE reserveringen SET Status = 'Goedgekeurd' WHERE Id = @Id;";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", reserveringId);
+
+                    int affectedRows = await command.ExecuteNonQueryAsync();
+                    System.Diagnostics.Debug.WriteLine($"Rows affected (approve): {affectedRows}");
+                }
+            }
         }
 
-        public Task RejectReserveringAsync(int reserveringId)
+        public async Task RejectReserveringAsync(int reserveringId)
         {
-            // Logica om een reservering af te wijzen.
-            return Task.CompletedTask;
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = "UPDATE reserveringen SET Status = 'Afgewezen' WHERE Id = @Id;";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", reserveringId);
+
+                    int affectedRows = await command.ExecuteNonQueryAsync();
+                    System.Diagnostics.Debug.WriteLine($"Rows affected (reject): {affectedRows}");
+                }
+            }
         }
     }
 }

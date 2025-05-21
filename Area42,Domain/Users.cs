@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Area42.Domain.Entities
-{
-    public class Klant
+{ 
+public class User
     {
         public int Id { get; set; }
-        public string Naam { get; set; }
-        public string Email { get; set; }
-        public string Telefoonnummer { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; }
     }
 }

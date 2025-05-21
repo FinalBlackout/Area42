@@ -16,8 +16,14 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // Registreer onze repository en service via DI
 builder.Services.AddScoped<IAccommodatieRepository>(provider => new AccommodatieRepository(connectionString));
+
 builder.Services.AddScoped<IAccommodatieService, AccommodatieService>();
 builder.Services.AddScoped<IReserveringService, ReserveringService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+
+
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

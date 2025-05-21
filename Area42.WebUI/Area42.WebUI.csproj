@@ -12,8 +12,4 @@
     <ProjectReference Include="..\Area42.Infrastructure\Area42.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\images\accommodaties\" />
-  </ItemGroup>
-
 </Project>

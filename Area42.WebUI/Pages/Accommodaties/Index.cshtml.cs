@@ -14,8 +14,7 @@ namespace Area42.WebUI.Pages.Accommodaties
         {
             _accommodatieService = accommodatieService;
         }
-
-        // Zorg dat deze property niet null blijft; initializeer hem met een lege lijst.
+        // Deze property vullen we met de accommodaties uit de database.
         public List<Accommodatie> Accommodaties { get; set; } = new List<Accommodatie>();
 
         public async Task OnGetAsync()

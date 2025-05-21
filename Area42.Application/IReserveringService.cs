@@ -7,6 +7,7 @@ namespace Area42.Application.Interfaces
 {
     public interface IReserveringService
     {
+
         Task<List<Reservering>> GetReserveringenVoorUserAsync(ClaimsPrincipal user);
 
         Task CreateReserveringAsync(Reservering reservering);

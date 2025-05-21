@@ -6,21 +6,25 @@
 
 <h2>Accommodaties</h2>
 <div class="row">
+    @if (User.IsInRole("Medewerker"))
+    {
+        <a asp-page="/Accommodaties/Add" class="btn btn-success mb-3">Nieuwe Accommodatie Toevoegen</a>
+    }
     @if (Model.Accommodaties != null && Model.Accommodaties.Any())
     {
+        
+
         foreach (var accommodatie in Model.Accommodaties)
         {
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
                     @if (!string.IsNullOrEmpty(accommodatie.ImagePath))
                     {
-                        <!-- Zorg dat je de afbeelding ophaalt met het juiste pad. -->
                         <img class="card-img-top" src="~/@(accommodatie.ImagePath)" alt="@accommodatie.Naam" />
                     }
                     else
                     {
-                        <!-- Optioneel: een standaardafbeelding tonen als er geen afbeelding is opgegeven -->
-                        <img class="card-img-top" src="~/images/default-accommodation.jpg" alt="Default image" />
+                        <img class="card-img-top" src="~/images/Accommodaties/default-accommodation.jpg" alt="Default image" />
                     }
                     <div class="card-body">
                         <h5 class="card-title">@accommodatie.Naam</h5>
@@ -30,6 +34,7 @@
                             <strong>Prijs:</strong> &euro;@accommodatie.PrijsPerNacht
                         </p>
                         <p class="card-text">@accommodatie.Beschrijving</p>
+                        <a asp-page="/Reserveringen/Add" class="btn btn-primary">Maak een reservering</a>
                     </div>
                 </div>
             </div>
