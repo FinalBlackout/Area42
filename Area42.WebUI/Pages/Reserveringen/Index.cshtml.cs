@@ -1,6 +1,7 @@
 using Area42.Application.Interfaces;
 using Area42.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -17,15 +18,39 @@ namespace Area42.WebUI.Pages.Reserveringen
         {
             _reserveringService = reserveringService;
         }
-
-        // Deze property vult de naam van de reserveringen (ofwel alle, of alleen de eigen reserveringen)
+        
         public List<Reservering> Reserveringen { get; set; } = new List<Reservering>();
+
+        public async Task<IActionResult> OnPostUpdateStatusAsync(int id, string actionType)
+        {
+            System.Diagnostics.Debug.WriteLine($"OnPostUpdateStatusAsync aangeroepen voor id {id} met actie {actionType}");
+
+            if (actionType == "approve")
+            {
+                await _reserveringService.ApproveReserveringAsync(id);
+                TempData["SuccessMessage"] = "Reservering is goedgekeurd.";
+            }
+            else if (actionType == "cancel")
+            {
+                await _reserveringService.RejectReserveringAsync(id);
+                TempData["SuccessMessage"] = "Reservering is geannuleerd.";
+            }
+            else if (actionType == "delete")
+            {
+                await _reserveringService.DeleteReserveringAsync(id);
+                TempData["SuccessMessage"] = "Reservering is verwijderd.";
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Onbekende actie.");
+                return Page();
+            }
+            return RedirectToPage();
+        }
+
 
         public async Task OnGetAsync()
         {
-            // De service controleert intern de rol van de ingelogde gebruiker.
-            // Als de gebruiker "Medewerker" is wordt alle reserveringen teruggegeven.
-            // Bij een "Klant" worden alleen de reserveringen van de klant opgehaald.
             Reserveringen = await _reserveringService.GetReserveringenVoorUserAsync(User);
         }
     }

@@ -182,10 +182,10 @@ namespace Area42.Infrastructure.Services
 
                 using (var command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@Id", reserveringId);
+                    command.Parameters.Add("@Id", MySqlDbType.Int32).Value = reserveringId;
 
                     int affectedRows = await command.ExecuteNonQueryAsync();
-                    System.Diagnostics.Debug.WriteLine($"Rows affected (approve): {affectedRows}");
+                    Console.WriteLine($"Rows affected (approve): {affectedRows}");
                 }
             }
         }

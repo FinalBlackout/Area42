@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<PropertyGroup>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+	</ItemGroup>
+
+
+
+	<ItemGroup>
+    <ProjectReference Include="..\Area42,Domain\Area42.Domain.csproj" />
+    <ProjectReference Include="..\Area42.Application\Area42.Application.csproj" />
+    <ProjectReference Include="..\Area42.Infrastructure\Area42.Infrastructure.csproj" />
+    <ProjectReference Include="..\Area42.WebUI\Area42.WebUI.csproj" />
+  </ItemGroup>
+
+</Project>

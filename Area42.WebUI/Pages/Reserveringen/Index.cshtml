@@ -30,7 +30,16 @@
                     <td>@reserv.Startdatum.ToShortDateString()</td>
                     <td>@reserv.Einddatum.ToShortDateString()</td>
                     <td>@reserv.Status</td>
-                    @* Voeg hier knoppen toe om bijvoorbeeld te bewerken/verwijderen als de gebruiker medewerker is *@
+                    @if (User.IsInRole("Medewerker"))
+                    {
+                        <td>
+                            <form method="post" asp-page-handler="UpdateStatus" asp-route-id="@reserv.Id">
+                                <button type="submit" name="actionType" value="approve" class="btn btn-primary">Goedkeuren</button>
+                                <button type="submit" name="actionType" value="cancel" class="btn btn-danger">Annuleren</button>
+                                <button type="submit" name="actionType" value="delete" class="btn btn-secondary">Verwijderen</button>
+                            </form>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
