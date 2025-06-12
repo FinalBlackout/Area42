@@ -1,45 +1,22 @@
-﻿using System.Data;
+﻿using System.Threading.Tasks;
 using Area42.Application.Interfaces;
 using Area42.Domain.Entities;
-using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
+using Area42.Infrastructure.Data;
 
-public class UserService : IUserService
+namespace Area42.Infrastructure.Services
 {
-    private readonly IConfiguration _configuration;
-
-    public UserService(IConfiguration configuration)
+    public class UserService : IUserService
     {
-        _configuration = configuration;
-    }
+        private readonly IUserRepository _userRepository;
 
-    public async Task<User?> GetUserByUsernameAsync(string username)
-    {
-        string connectionString = _configuration.GetConnectionString("DefaultConnection");
-
-        using (var connection = new MySqlConnection(connectionString))
+        public UserService(IUserRepository userRepository)
         {
-            await connection.OpenAsync();
-
-            string query = "SELECT Id, Username, Role FROM users WHERE LOWER(Username) = @username LIMIT 1;";
-            using (var command = new MySqlCommand(query, connection))
-            {
-                command.Parameters.AddWithValue("@username", username.ToLower());
-
-                using (var reader = await command.ExecuteReaderAsync())
-                {
-                    if (reader.Read())
-                    {
-                        return new User
-                        {
-                            Id = reader.GetInt32("Id"),
-                            Username = reader.GetString("Username"),
-                            Role = reader.GetString("Role")
-                        };
-                    }
-                }
-            }
+            _userRepository = userRepository;
         }
-        return null;
+
+        public Task<User?> GetUserByUsernameAsync(string username)
+        {
+            return _userRepository.GetUserByUsernameAsync(username);
+        }
     }
 }

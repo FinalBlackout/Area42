@@ -12,6 +12,7 @@ namespace Area42.Infrastructure.Data
     public interface IAccommodatieRepository
     {
         Task<List<Accommodatie>> GetAllAccommodatiesAsync();
-        // Andere CRUD-operaties kunnen later worden toegevoegd.
+        Task AddAccommodatieAsync(Accommodatie accommodatie);
+        Task DeleteAccommodatieAsync(int id);
     }
 }

@@ -51,7 +51,14 @@ namespace Area42.WebUI.Pages.Reserveringen
 
         public async Task OnGetAsync()
         {
-            Reserveringen = await _reserveringService.GetReserveringenVoorUserAsync(User);
+            string userId = null;
+            if (!User.IsInRole("Medewerker"))
+            {
+                // Haal de user-ID op uit de NameIdentifier claim
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+
+            Reserveringen = await _reserveringService.GetReserveringenAsync(userId);
         }
     }
 }

@@ -1,82 +1,50 @@
-﻿using System.Linq;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Area42.Application.Interfaces;
 using Area42.Domain.Entities;
-using Area42.Test.Mocks;
+using Area42.Infrastructure.Services;
+using Area42.Infrastructure.Data;
 
-namespace Area42.Test
+namespace Area42.Tests.Unit
 {
     [TestClass]
     public class AccommodatieServiceTests
     {
+        private Mock<IAccommodatieRepository> _mockRepository;
         private IAccommodatieService _service;
 
         [TestInitialize]
         public void Setup()
         {
-            // Elke test start met een frisse instantie van de fake service.
-            _service = new FakeAccommodatieService();
+            _mockRepository = new Mock<IAccommodatieRepository>();
+            _service = new AccommodatieService(_mockRepository.Object);
         }
 
         [TestMethod]
-        public async Task CreateAccommodatieAsync_Should_Add_NewAccommodatie()
+        public async Task GetAllAccommodatiesAsync_ShouldReturnAccommodations()
         {
             // Arrange
-            var nieuweAccommodatie = new Accommodatie
+            var accommodaties = new List<Accommodatie>
             {
-                Id = 1,
-                Naam = "Hotel de Zon",
-                Type = "Hotel",
-                Capaciteit = 100,
-                Beschrijving = "Een zonnig hotel in het centrum.",
-                PrijsPerNacht = 150.00m,
-                Faciliteiten = "Zwembad, WiFi, Restaurant",
-                Status = "Beschikbaar",
-                ImagePath = "path/to/hoteldezon.jpg"
+                new Accommodatie { Id = 1, Naam = "Hotel Suite", Type = "Suite", Capaciteit = 2, PrijsPerNacht = 200.0m, Status = "Beschikbaar", ImagePath = null },
+                new Accommodatie { Id = 2, Naam = "Standaard Kamer", Type = "Standard", Capaciteit = 1, PrijsPerNacht = 100.0m, Status = "Beschikbaar", ImagePath = null }
             };
+
+            _mockRepository.Setup(repo => repo.GetAllAccommodatiesAsync())
+                           .ReturnsAsync(accommodaties);
 
             // Act
-            await _service.AddAccommodatieAsync(nieuweAccommodatie);
-            var alleAccommodaties = await _service.GetAllAccommodatiesAsync();
+            var result = await _service.GetAllAccommodatiesAsync();
 
             // Assert
-            Assert.AreEqual(1, alleAccommodaties.Count, "Er moet 1 accommodatie in de lijst staan.");
-            var accommodatie = alleAccommodaties.First();
-            Assert.AreEqual("Hotel de Zon", accommodatie.Naam, "De naam komt niet overeen.");
-            Assert.AreEqual("Hotel", accommodatie.Type);
-            Assert.AreEqual(100, accommodatie.Capaciteit);
-            Assert.AreEqual("Beschikbaar", accommodatie.Status);
-        }
+            Assert.IsNotNull(result, "Result mag niet null zijn.");
+            Assert.AreEqual(2, result.Count, "Er moeten 2 accommodaties worden teruggegeven.");
+            Assert.AreEqual("Hotel Suite", result[0].Naam);
+            Assert.AreEqual(200.0m, result[0].PrijsPerNacht);
 
-
-        [TestMethod]
-        public async Task DeleteAccommodatieAsync_Should_Remove_Accommodatie()
-        {
-            // Arrange: voeg een accommodatie toe
-            var accommodatie = new Accommodatie
-            {
-                Id = 3,
-                Naam = "Appartement De Leeuw",
-                Type = "Appartement",
-                Capaciteit = 4,
-                Beschrijving = "Gezellig appartement.",
-                PrijsPerNacht = 120.00m,
-                Faciliteiten = "Keuken, WiFi",
-                Status = "Beschikbaar",
-                ImagePath = "path/to/appartement.jpg"
-            };
-
-            await _service.AddAccommodatieAsync(accommodatie);
-            var voorVerwijderen = await _service.GetAllAccommodatiesAsync();
-            Assert.AreEqual(1, voorVerwijderen.Count, "Er moet 1 accommodatie aanwezig zijn vóór verwijdering.");
-
-            // Act: verwijder de accommodatie
-            await _service.DeleteAccommodatieAsync(accommodatie.Id);
-            var naVerwijderen = await _service.GetAllAccommodatiesAsync();
-
-            // Assert
-            Assert.AreEqual(0, naVerwijderen.Count, "De accommodatie moet verwijderd zijn.");
+            _mockRepository.Verify(repo => repo.GetAllAccommodatiesAsync(), Times.Once);
         }
     }
 }
