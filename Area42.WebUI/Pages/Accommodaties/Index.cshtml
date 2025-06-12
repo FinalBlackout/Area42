@@ -34,7 +34,20 @@
                             <strong>Prijs:</strong> &euro;@accommodatie.PrijsPerNacht
                         </p>
                         <p class="card-text">@accommodatie.Beschrijving</p>
-                        <a asp-page="/Reserveringen/Add" class="btn btn-primary">Maak een reservering</a>
+                        <a asp-page="/Reserveringen/Add" class="btn ms-2 mb-3 btn-primary">Maak een reservering</a>
+                        @if (User.IsInRole("Medewerker"))
+                        {
+                            <form method="post"
+                                  asp-page-handler="Delete"
+                                  asp-route-id="@accommodatie.Id"
+                                  onsubmit="return confirm('Weet je het zeker?');"
+                                  style="display:inline">
+                                <button type="submit" class="btn ms-2 mb-3 btn-danger">
+                                    Verwijderen
+                                </button>
+                                @Html.AntiForgeryToken()
+                            </form>
+                        }
 
                     </div>
                 </div>

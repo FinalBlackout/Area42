@@ -8,5 +8,8 @@ namespace Area42.Application.Interfaces
     {
         Task<List<Accommodatie>> GetAllAccommodatiesAsync();
         Task AddAccommodatieAsync(Accommodatie accommodatie);
+
+        Task DeleteAccommodatieAsync(int id);
+
     }
 }

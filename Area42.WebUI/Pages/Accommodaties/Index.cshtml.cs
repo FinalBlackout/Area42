@@ -1,5 +1,6 @@
 using Area42.Application.Interfaces;
 using Area42.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,5 +23,13 @@ namespace Area42.WebUI.Pages.Accommodaties
             // Vul de lijst met accommodaties uit de database
             Accommodaties = await _accommodatieService.GetAllAccommodatiesAsync();
         }
+
+        // Handler voor verwijderen
+        public async Task<IActionResult> OnPostDeleteAsync(int id)
+        {
+            await _accommodatieService.DeleteAccommodatieAsync(id);
+            return RedirectToPage(); // laadt de lijst opnieuw
+        }
+
     }
 }

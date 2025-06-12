@@ -15,7 +15,7 @@ namespace Area42.Domain.Entities
         public string Beschrijving { get; set; }
         public decimal PrijsPerNacht { get; set; }
         public string Faciliteiten { get; set; }
-        public string Status { get; set; } // Bijvoorbeeld "Beschikbaar", "Bezet", "Onderhoud"
+        public string Status { get; set; } 
         public string ImagePath { get; set; }
 
     }
