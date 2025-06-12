@@ -50,33 +50,33 @@ namespace Area42.Test
         }
 
 
-        //[TestMethod]
-        //public async Task DeleteAccommodatieAsync_Should_Remove_Accommodatie()
-        //{
-        //    // Arrange: voeg een accommodatie toe
-        //    var accommodatie = new Accommodatie
-        //    {
-        //        Id = 3,
-        //        Naam = "Appartement De Leeuw",
-        //        Type = "Appartement",
-        //        Capaciteit = 4,
-        //        Beschrijving = "Gezellig appartement.",
-        //        PrijsPerNacht = 120.00m,
-        //        Faciliteiten = "Keuken, WiFi",
-        //        Status = "Beschikbaar",
-        //        ImagePath = "path/to/appartement.jpg"
-        //    };
+        [TestMethod]
+        public async Task DeleteAccommodatieAsync_Should_Remove_Accommodatie()
+        {
+            // Arrange: voeg een accommodatie toe
+            var accommodatie = new Accommodatie
+            {
+                Id = 3,
+                Naam = "Appartement De Leeuw",
+                Type = "Appartement",
+                Capaciteit = 4,
+                Beschrijving = "Gezellig appartement.",
+                PrijsPerNacht = 120.00m,
+                Faciliteiten = "Keuken, WiFi",
+                Status = "Beschikbaar",
+                ImagePath = "path/to/appartement.jpg"
+            };
 
-        //    await _service.AddAccommodatieAsync(accommodatie);
-        //    var voorVerwijderen = await _service.GetAllAccommodatiesAsync();
-        //    Assert.AreEqual(1, voorVerwijderen.Count, "Er moet 1 accommodatie aanwezig zijn vóór verwijdering.");
+            await _service.AddAccommodatieAsync(accommodatie);
+            var voorVerwijderen = await _service.GetAllAccommodatiesAsync();
+            Assert.AreEqual(1, voorVerwijderen.Count, "Er moet 1 accommodatie aanwezig zijn vóór verwijdering.");
 
-        //    // Act: verwijder de accommodatie
-        //    await _service.DeleteAccommodatieAsync(accommodatie.Id);
-        //    var naVerwijderen = await _service.GetAllAccommodatiesAsync();
+            // Act: verwijder de accommodatie
+            await _service.DeleteAccommodatieAsync(accommodatie.Id);
+            var naVerwijderen = await _service.GetAllAccommodatiesAsync();
 
-        //    // Assert
-        //    Assert.AreEqual(0, naVerwijderen.Count, "De accommodatie moet verwijderd zijn.");
-        //}
+            // Assert
+            Assert.AreEqual(0, naVerwijderen.Count, "De accommodatie moet verwijderd zijn.");
+        }
     }
 }

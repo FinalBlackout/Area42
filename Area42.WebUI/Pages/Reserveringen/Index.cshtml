@@ -16,9 +16,11 @@
                 <th>Startdatum</th>
                 <th>Einddatum</th>
                 <th>Status</th>
-                @* Eventueel
-                <th>Acties</th>
-                *@
+                @if (User.IsInRole("Medewerker"))
+                {
+                    <th>User</th>
+                    <th>Acties</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -32,6 +34,9 @@
                     <td>@reserv.Status</td>
                     @if (User.IsInRole("Medewerker"))
                     {
+                        <td>
+                            @reserv.UserId
+                        </td>
                         <td>
                             <form method="post" asp-page-handler="UpdateStatus" asp-route-id="@reserv.Id">
                                 <button type="submit" name="actionType" value="approve" class="btn btn-primary">Goedkeuren</button>
