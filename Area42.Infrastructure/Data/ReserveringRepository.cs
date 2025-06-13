@@ -20,11 +20,9 @@ namespace Area42.Infrastructure.Data
         public async Task<List<Reservering>> GetReserveringenAsync(string userId = null)
         {
             var lijst = new List<Reservering>();
-            // Basis-query
             var sql = @"
                 SELECT Id, AccommodatieId, UserId, Startdatum, Einddatum, Status 
                   FROM reserveringen";
-            // Als userId is meegegeven, filter dan
             if (!string.IsNullOrEmpty(userId))
                 sql += " WHERE UserId = @UserId;";
 
@@ -76,7 +74,7 @@ namespace Area42.Infrastructure.Data
                 Status = rdr.GetString("Status")
             };
         }
-
+        
         public async Task AddAsync(Reservering r)
         {
             const string sql = @"

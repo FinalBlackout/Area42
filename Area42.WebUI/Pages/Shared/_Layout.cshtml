@@ -1,84 +1,100 @@
 ﻿<!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Mijn Accommodatie App</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Area42.WebUI.styles.css" asp-append-version="true" />
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #f4f7f9 0%, #e9eff5 100%);
-            color: #333;
-        }
-
-        header {
-            margin-bottom: 2rem;
-        }
-
-        footer {
-            background-color: #f8f9fa;
-            padding: 1rem 0;
-            border-top: 1px solid #e7e7e7;
-            margin-top: 2rem;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - Parkwinkel Area42</title>
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f4f7f9 0%, #e9eff5 100%);
+      color: #333;
+      margin: 0;
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 220px;
+      background-color: #0d6efd;
+      color: white;
+      transition: width 0.3s ease;
+      padding-top: 1rem;
+    }
+    .sidebar.collapsed {
+      width: 60px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #0056b3;
+    }
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: white;
+      padding: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    footer {
+      background-color: #f8f9fa;
+      padding: 1rem 0;
+      border-top: 1px solid #e7e7e7;
+      text-align: center;
+      margin-top: auto;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="/">Accommodatie App</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu" aria-controls="navmenu" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navmenu">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Accommodaties">Accommodaties</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Reserveringen">Reserveringen</a>
-                        </li>
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Account/Logout">Logout</a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Account/Login">Login</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="text-center">
-        <div class="container">
-            <p class="mb-0">&copy; @DateTime.Now.Year - Mijn Accommodatie App</p>
-        </div>
+  <!-- Sidebar navigatie -->
+  <div id="sidebar" class="sidebar">
+    <button onclick="toggleSidebar()" class="toggle-btn">☰</button>
+    <a asp-page="/Index">🏠 Home</a>
+    <a asp-page="/Accommodaties/Index">🏨 Accommodaties</a>
+    <a asp-page="/Reserveringen/Index">📝 Reserveringen</a>
+    @if (User.Identity.IsAuthenticated)
+    {
+      <a asp-page="/Account/Logout">Logout</a>
+    }
+    else
+    {
+      <a asp-page="/Account/Login">Login</a>
+    }
+  </div>
+  
+  <!-- Main content gebied -->
+  <div class="main-content">
+    @RenderBody()
+    
+    <footer>
+      <p>&copy; @DateTime.Now.Year - Parkwinkel Area42</p>
     </footer>
+  </div>
 
-    <!-- Laden van jQuery en Bootstrap Bundle (inclusief Popper) -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    @RenderSection("Scripts", required: false)
+  <!-- Scripts -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+  </script>
+  <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  @RenderSection("Scripts", required: false)
 </body>
 </html>
+

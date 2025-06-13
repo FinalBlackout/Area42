@@ -14,6 +14,6 @@ namespace Area42.Domain.Entities
         public int UserId { get; set; }
         public DateTime Startdatum { get; set; }
         public DateTime Einddatum { get; set; }
-        public string Status { get; set; } // Bijvoorbeeld "Bevestigd", "In behandeling", "Geannuleerd"
+        public string Status { get; set; } //Bevestigd, In behandeling, Geannuleerd
     }
 }

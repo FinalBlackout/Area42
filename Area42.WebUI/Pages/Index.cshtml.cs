@@ -6,7 +6,7 @@ namespace Area42.WebUI.Pages
     {
         public void OnGet()
         {
-            // Eventuele extra logica voor de homepagina kan hier komen.
+        
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Area42.Infrastructure.Data
         {
             _cs = configuration.GetConnectionString("DefaultConnection");
         }
-
+        
         public async Task<List<Accommodatie>> GetAllAccommodatiesAsync()
         {
             var lijst = new List<Accommodatie>();

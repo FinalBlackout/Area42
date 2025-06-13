@@ -15,20 +15,17 @@ namespace Area42.WebUI.Pages.Accommodaties
         {
             _accommodatieService = accommodatieService;
         }
-        // Deze property vullen we met de accommodaties uit de database.
         public List<Accommodatie> Accommodaties { get; set; } = new List<Accommodatie>();
 
         public async Task OnGetAsync()
         {
-            // Vul de lijst met accommodaties uit de database
             Accommodaties = await _accommodatieService.GetAllAccommodatiesAsync();
         }
 
-        // Handler voor verwijderen
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             await _accommodatieService.DeleteAccommodatieAsync(id);
-            return RedirectToPage(); // laadt de lijst opnieuw
+            return RedirectToPage();
         }
 
     }
