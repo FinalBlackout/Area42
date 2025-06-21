@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Area42.Domain.Entities
-{ 
-public class User
+{
+    public class Medewerker
     {
         public int Id { get; set; }
-        public string Username { get; set; }
+        public string Naam { get; set; }
+        public string Rol { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
-        public string Role { get; set; }
     }
 }

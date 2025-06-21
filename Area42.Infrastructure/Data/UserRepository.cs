@@ -4,7 +4,6 @@ using MySql.Data.MySqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
-
 namespace Area42.Infrastructure.Data
 {
     public class UserRepository : IUserRepository
@@ -17,16 +16,22 @@ namespace Area42.Infrastructure.Data
                                 ?? throw new ArgumentNullException("DefaultConnection");
         }
 
-        public async Task<User?> GetUserByUsernameAsync(string username)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
             using (var connection = new MySqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
 
-                string query = "SELECT Id, Username, Role FROM users WHERE LOWER(Username) = @username LIMIT 1;";
+                string query = @"
+                SELECT 
+                    Id, name, email, password, address, telephone, job, status 
+                FROM user
+                WHERE LOWER(email) = @Email 
+                LIMIT 1;";
+
                 using (var command = new MySqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@username", username.ToLower());
+                    command.Parameters.AddWithValue("@Email", email.ToLower());
 
                     using (var reader = await command.ExecuteReaderAsync())
                     {
@@ -35,8 +40,13 @@ namespace Area42.Infrastructure.Data
                             return new User
                             {
                                 Id = reader.GetInt32("Id"),
-                                Username = reader.GetString("Username"),
-                                Role = reader.GetString("Role")
+                                name = reader["name"]?.ToString() ?? "",
+                                email = reader["email"]?.ToString() ?? "",
+                                password = reader["password"]?.ToString() ?? "",
+                                address = reader["address"]?.ToString() ?? "",
+                                telephone = reader.GetInt32("telephone"),
+                                job = reader["job"]?.ToString() ?? "",
+                                status = reader["status"]?.ToString() ?? ""
                             };
                         }
                     }
@@ -44,5 +54,45 @@ namespace Area42.Infrastructure.Data
             }
             return null;
         }
-    }
-}
+    
+    public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string query = @"
+            SELECT 
+                Id, name, email, password, address, telephone, job, status 
+            FROM user
+            WHERE LOWER(name) = @Username 
+            LIMIT 1;";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username.ToLower());
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            return new User
+                            {
+                                Id = reader.GetInt32("Id"),
+                                name = reader["name"]?.ToString() ?? "",
+                                email = reader["email"]?.ToString() ?? "",
+                                password = reader["password"]?.ToString() ?? "",
+                                address = reader["address"]?.ToString() ?? "",
+                                telephone = reader.GetInt32("telephone"),
+                                job = reader["job"]?.ToString() ?? "",
+                                status = reader["status"]?.ToString() ?? ""
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+
+    } }

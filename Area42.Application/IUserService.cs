@@ -10,5 +10,6 @@ namespace Area42.Application.Interfaces
     public interface IUserService
     {
         Task<User?> GetUserByUsernameAsync(string username);
+        Task<User?> GetUserByEmailAsync(string email);
     }
 }

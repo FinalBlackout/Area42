@@ -5,6 +5,8 @@ namespace Area42.Infrastructure.Data
 {
     public interface IUserRepository
     {
+        Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByUsernameAsync(string username);
     }
+
 }

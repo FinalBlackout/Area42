@@ -5,19 +5,22 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//razer pages
+// Razor Pages
 builder.Services.AddRazorPages();
 
-//repository's
+// Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMedewerkerRepository, MedewerkerRepository>();
 builder.Services.AddScoped<IAccommodatieRepository, AccommodatieRepository>();
 builder.Services.AddScoped<IReserveringRepository, ReserveringRepository>();
 
-//services
+// Services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMedewerkerService, MedewerkerService>();
 builder.Services.AddScoped<IAccommodatieService, AccommodatieService>();
 builder.Services.AddScoped<IReserveringService, ReserveringService>();
 
+// Authenticatie (voor zowel gebruikers als medewerkers geschikt)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -27,6 +30,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
+// Middleware & Routing
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");

@@ -23,9 +23,9 @@ namespace Area42.WebUI.Pages.Account
 
         [BindProperty]
         public string Username { get; set; }
-
         [BindProperty]
         public string Password { get; set; }
+
 
         public string ErrorMessage { get; set; }
 
@@ -45,7 +45,6 @@ namespace Area42.WebUI.Pages.Account
 
             string dbUsername = null;
             string dbPassword = null;
-            string dbRole = null;
 
             try
             {
@@ -53,7 +52,7 @@ namespace Area42.WebUI.Pages.Account
                 {
                     await connection.OpenAsync();
 
-                    string query = "SELECT Username, Password, Role FROM Users WHERE LOWER(Username) = @Username LIMIT 1";
+                    string query = "SELECT name, Password FROM User WHERE LOWER(name) = @Username LIMIT 1";
                     using (var command = new MySqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@Username", Username.ToLower());
@@ -61,9 +60,8 @@ namespace Area42.WebUI.Pages.Account
                         {
                             if (await reader.ReadAsync())
                             {
-                                dbUsername = reader.GetString("Username");
-                                dbPassword = reader.GetString("Password");
-                                dbRole = reader.GetString("Role");
+                                dbUsername = reader.GetString("name");
+                                dbPassword = reader.GetString("password");
                             }
                         }
                     }
@@ -84,7 +82,7 @@ namespace Area42.WebUI.Pages.Account
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, dbUsername),
-                    new Claim(ClaimTypes.Role, dbRole)
+                    new Claim(ClaimTypes.Role, "Gebruiker")
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
