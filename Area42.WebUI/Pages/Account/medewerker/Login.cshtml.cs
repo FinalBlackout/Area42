@@ -35,11 +35,11 @@ namespace Area42.Pages.Account.Medewerker
                 return Page();
             }
             var claims = new List<Claim>
-{
-    new Claim(ClaimTypes.Name, medewerker.Naam),
-    new Claim(ClaimTypes.Email, medewerker.Email),
-    new Claim(ClaimTypes.Role, "Medewerker")
-};
+            {
+                new Claim(ClaimTypes.Name, medewerker.Naam),
+                new Claim(ClaimTypes.Email, medewerker.Email),
+                new Claim(ClaimTypes.Role, "Medewerker")
+            };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);

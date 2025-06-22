@@ -8,14 +8,16 @@ namespace Area42.Infrastructure.Data
 {
     public class UserRepository : IUserRepository
     {
+        // Connection string to the MySQL database, initialized from configuration
         private readonly string _connectionString;
-
+        // Constructor that initializes the connection string from configuration
         public UserRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                                 ?? throw new ArgumentNullException("DefaultConnection");
         }
 
+        // Gets a user by their email address
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             using (var connection = new MySqlConnection(_connectionString))
@@ -54,8 +56,9 @@ namespace Area42.Infrastructure.Data
             }
             return null;
         }
-    
-    public async Task<User?> GetUserByUsernameAsync(string username)
+
+        // Gets a user by their username (name in this case)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
             using (var connection = new MySqlConnection(_connectionString))
             {

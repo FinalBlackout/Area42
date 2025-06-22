@@ -17,6 +17,7 @@ namespace Area42.Infrastructure.Data
                   ?? throw new ArgumentNullException("DefaultConnection");
         }
 
+        // Gets a list of reservations, optionally filtered by user ID
         public async Task<List<Reservering>> GetReserveringenAsync(string userId = null)
         {
             var lijst = new List<Reservering>();
@@ -49,6 +50,7 @@ namespace Area42.Infrastructure.Data
             return lijst;
         }
 
+        // Gets a reservation by its ID
         public async Task<Reservering> GetReserveringByIdAsync(int id)
         {
             const string sql = @"
@@ -74,7 +76,7 @@ namespace Area42.Infrastructure.Data
                 Status = rdr.GetString("Status")
             };
         }
-        
+        // Adds a new reservation to the database
         public async Task AddAsync(Reservering r)
         {
             const string sql = @"
@@ -95,7 +97,7 @@ namespace Area42.Infrastructure.Data
 
             await cmd.ExecuteNonQueryAsync();
         }
-
+        //  Updates an existing reservation in the database
         public async Task UpdateAsync(Reservering r)
         {
             const string sql = @"
@@ -120,7 +122,7 @@ namespace Area42.Infrastructure.Data
 
             await cmd.ExecuteNonQueryAsync();
         }
-
+        // Deletes a reservation by its ID
         public async Task DeleteAsync(int id)
         {
             const string sql = "DELETE FROM reserveringen WHERE Id = @Id;";
@@ -133,7 +135,7 @@ namespace Area42.Infrastructure.Data
             if (rows == 0)
                 throw new KeyNotFoundException($"Geen reservering met ID {id} gevonden.");
         }
-
+        // Approves a reservation by changing its status
         public async Task ApproveAsync(int id)
         {
             const string sql = "UPDATE reserveringen SET Status = 'Goedgekeurd' WHERE Id = @Id;";
@@ -143,7 +145,7 @@ namespace Area42.Infrastructure.Data
             cmd.Parameters.AddWithValue("@Id", id);
             await cmd.ExecuteNonQueryAsync();
         }
-
+        // Rejects a reservation by changing its status
         public async Task RejectAsync(int id)
         {
             const string sql = "UPDATE reserveringen SET Status = 'Afgewezen' WHERE Id = @Id;";

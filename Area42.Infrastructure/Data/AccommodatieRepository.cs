@@ -12,11 +12,13 @@ namespace Area42.Infrastructure.Data
     {
         private readonly string _cs;
 
+        // Constructor that initializes the connection string from configuration
         public AccommodatieRepository(IConfiguration configuration)
         {
             _cs = configuration.GetConnectionString("DefaultConnection");
         }
-        
+
+        // Gets a list of all accommodations from the database
         public async Task<List<Accommodatie>> GetAllAccommodatiesAsync()
         {
             var lijst = new List<Accommodatie>();
@@ -56,6 +58,7 @@ namespace Area42.Infrastructure.Data
             return lijst;
         }
 
+        // Gets a specific accommodation by its ID
         public async Task AddAccommodatieAsync(Accommodatie accommodatie)
         {
             await using var conn = new MySqlConnection(_cs);
@@ -92,6 +95,7 @@ namespace Area42.Infrastructure.Data
                 throw new Exception("Kon accommodatie niet toevoegen.");
         }
 
+        // Gets a specific accommodation by its ID
         public async Task DeleteAccommodatieAsync(int id)
         {
             await using var conn = new MySqlConnection(_cs);

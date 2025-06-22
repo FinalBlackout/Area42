@@ -9,14 +9,16 @@ namespace Area42.Infrastructure.Data
 {
     public class MedewerkerRepository : IMedewerkerRepository
     {
+        
         private readonly string _connectionString;
 
+        // Constructor that initializes the connection string from configuration
         public MedewerkerRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                                 ?? throw new ArgumentNullException("DefaultConnection");
         }
-
+        // Gets a medewerker (employee) by their email address
         public async Task<Medewerker?> GetMedewerkerByEmailAsync(string email)
         {
             using (var connection = new MySqlConnection(_connectionString))
